@@ -54,6 +54,10 @@ class UserFriendshipsControllerTest < ActionController::TestCase
         get :new, friend_id: users(:daniel)
         assert_match /Do you really want to friend #{users(:daniel).full_name}?/, response.body
       end
+    end
+  end
+
+
 
       context "#create" do
         context "when not logged in" do
@@ -63,7 +67,63 @@ class UserFriendshipsControllerTest < ActionController::TestCase
         assert_redirected_to login_path
       end
     end
+
+      context "when logged in" do
+        setup do
+          sign_in users(:daniel)
+        end
+
+        context "with no friends_id" do
+         setup do
+           post :create
+         end
+
+          should "set the flash error message" do
+            assert !flash[:error].empty?
+          end
+
+          should "redirect to the site root" do
+            assert_redirected_to root_path
+          end
+        end
+
+        context "with a valid friend_id" do
+          setup do
+            post :create, user_friendship: { friend_id: users(:dirty) }
+          end
+
+          should "assign a friend object" do
+            assert assigns(:friend)
+            assert_equal users(:dirty), assigns(:friend)
+          end
+
+
+      should "assign a user_friendship object" do
+        assert assigns(:user_friendship)
+        assert_equal users(:daniel), assigns(:user_friendship).user
+        assert_equal users(:dirty), assigns(:user_friendship).friend
+      end
+
+      should "create a friendship" do
+        assert users(:daniel).friends.include?(users(:dirty))
+      end
+
+      should "redirect to the profile page of the friend" do
+        assert_response :redirect
+        assert_redirected_to profile_path(users(:dirty))
+      end
+
+      should "set the flash success message" do
+        assert flash[:success]
+        assert_equal "You are now friends with #{users(:dirty).full_name}", flash[:success]
+        end
+     end
+    end
+   end
   end
-end
-  end
-  end
+
+
+
+
+
+
