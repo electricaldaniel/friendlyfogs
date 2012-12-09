@@ -1,4 +1,6 @@
 Treebook::Application.routes.draw do
+  get "chat/index"
+
   get "profiles/show"
 
 
