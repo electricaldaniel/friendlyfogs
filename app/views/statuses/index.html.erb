@@ -5,7 +5,6 @@
 </div>
 
 
-
 <%= link_to "Post a New Status", new_status_path, class: "btn btn-success" %>
 
 <% @statuses.each do |status| %>
@@ -20,10 +19,9 @@
           <div class="meta">
             <%= link_to time_ago_in_words(status.created_at) + " ago", status %>
             <span class="admin">
-          | <%= link_to "Edit", edit_status_path(status) %> |
-              <%= link_to "Delete", status, method: :delete, data: { confirm: "Are you sure your want to delete this status?"} %>
               <% if current_user == status.user %>
-              <Show "Edit" && "Delete"></Show>
+               <%= link_to "Edit", edit_status_path(status) %> |
+                  <%= link_to "Delete", status, method: :delete, data: { confirm: "Are you sure your want to delete this status?"} %>
               <% end %>
         </span>
           </div>
